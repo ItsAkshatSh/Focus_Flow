@@ -226,7 +226,7 @@
         class SpotifyAuth {
             constructor() {
                 this.clientId = '53afdf5a103e424f85bb03bbf5336d46'; 
-                this.redirectUri = 'https://focusflw.vercel.app/';
+                this.redirectUri = 'https://focusflw.vercel.app/index.html';
                 this.scopes = [
                     'user-read-playback-state',
                     'user-modify-playback-state', 
