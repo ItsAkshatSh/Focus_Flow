@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="/images/logo.ico">
+    <title>Focus Flow</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-purple">
+    <div class="container">
+        <canvas id="visualizer"></canvas>
+        
+        <div class="ui-overlay">
+            <div class="header">
+                <div class="logo">
+                    <img src = "logo.png" alt="Logo" style="height: 180px; vertical-align: middle;">
+                </div>
+                <div class="focus-stats">
+                    <div class="stat">
+                        <div class="stat-value" id="focusStreak">0</div>
+                        <div class="stat-label">Focus Streak</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="todayMinutes">0</div>
+                        <div class="stat-label">Today (min)</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="totalHours">0</div>
+                        <div class="stat-label">Total Hours</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <div class="center-panel">
+                    <div class="album-art" id="albumArt">😴</div>
+                    
+                    <div class="track-info">
+                        <div class="track-title" id="trackTitle">No song playing</div>
+                        <div class="track-artist" id="trackArtist"></div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="bottom-panel">
+                <div class="focus-mode">
+                    <div class="timer" id="timer">25:00</div>
+                    <div class="mode-selector">
+                        <button class="mode-btn active" onclick="setMode('pomodoro')">Pomodoro</button>
+                        <button class="mode-btn" onclick="setMode('deep')">Deep Work</button>
+                        <button class="mode-btn" onclick="setMode('break')">Break</button>
+                    </div>
+                    <button class="btn" id="startTimer" onclick="toggleTimer()">Start Focus</button>
+                </div>
+                
+                <div class="controls">
+                    <button class="btn" id="spotifyBtn" onclick="openSpotify()">🎵 Connect Spotify</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
