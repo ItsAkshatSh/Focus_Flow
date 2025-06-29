@@ -180,8 +180,6 @@
             focusStats.todayMinutes += sessionMinutes;
             focusStats.totalHours = Math.floor(focusStats.todayMinutes / 60);
             
-            saveStats();
-            
             updateStatsDisplay();
             
             const originalTimes = {
@@ -225,21 +223,10 @@
             }, 3000);
         }
 
-        function loadStats() {
-            const saved = localStorage.getItem('focusStats');
-            if (saved) {
-                Object.assign(focusStats, JSON.parse(saved));
-            }
-        }
-
-        function saveStats() {
-            localStorage.setItem('focusStats', JSON.stringify(focusStats));
-        }
-
         class SpotifyAuth {
             constructor() {
                 this.clientId = '53afdf5a103e424f85bb03bbf5336d46'; 
-                this.redirectUri = 'https://focusflw.vercel.app/';
+                this.redirectUri = 'https://focusflw.vercel.app/index.html';
                 this.scopes = [
                     'user-read-playback-state',
                     'user-modify-playback-state', 
@@ -325,8 +312,6 @@
                 return this.accessToken;
             }
 
-            
-
             async apiCall(endpoint) {
                 if (!this.accessToken) {
                     throw new Error('No access token available');
@@ -347,13 +332,9 @@
                 }
 
                 if (response.status === 401) {
-                    try {
-                        await this.refreshAccessToken();
-                        return this.apiCall(endpoint);
-                    } catch (e) {
-                        createNotification('Spotify authentication expired. Please reconnect.');
-                        throw e;
-                    }
+                    if (this.debugMode) console.log('Token expired, refreshing...');
+                    await this.refreshAccessToken();
+                    return this.apiCall(endpoint);
                 }
 
                 if (response.status === 403) {
@@ -383,7 +364,6 @@
 
             async refreshAccessToken() {
                 if (!this.refreshToken) {
-                    this.clearTokens();
                     throw new Error('No refresh token available');
                 }
 
@@ -403,10 +383,6 @@
                     const data = await response.json();
                     this.accessToken = data.access_token;
                     sessionStorage.setItem('access_token', this.accessToken);
-                } else {
-                    this.clearTokens();
-                    createNotification('Spotify session expired. Please reconnect.');
-                    throw new Error('Failed to refresh token');
                 }
             }
 
@@ -446,14 +422,6 @@
                 window.location.href = authUrl;
             }
 
-            clearTokens() {
-                sessionStorage.removeItem('access_token');
-                sessionStorage.removeItem('refresh_token');
-                sessionStorage.removeItem('code_verifier');
-                this.accessToken = null;
-                this.refreshToken = null;
-            }
-
         }
 
         const spotifyAuth = new SpotifyAuth();
@@ -481,7 +449,7 @@
                         createNotification('No music found. Start playing something on Spotify!');
                     }
                 }
-                //refresh for song check -- only after successful auth
+                //refresh for song check -- does not work ( only after refresh for some reason )
                 setInterval(async () => {
                     try {
                         const track = await spotifyAuth.apiCall('me/player/currently-playing');
@@ -585,8 +553,6 @@
         }
 
         window.addEventListener('load', async () => {
-            loadStats();
-            updateStatsDisplay();
             const wasCallback = await spotifyAuth.handleCallback();
             if (!wasCallback && spotifyAuth.getStoredToken()) {
                 spotifyAuth.onAuthSuccess();
